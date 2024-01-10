@@ -5,28 +5,31 @@ from tempfile import TemporaryFile
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-squareSize=24.3
+squareSize=25 # PDF file says this measure
+n_squares = 7 # number of squares of the shortest side
+m_squares = 10 # number of squares of the largest side
+
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-objp = np.zeros((6*9,3), np.float32)
-objp[:,:2] = np.mgrid[0:9,0:6].T.reshape(-1,2)*squareSize#milimetros
+objp = np.zeros((n_squares*m_squares,3), np.float32) # PDF chess have another set of dimensions
+objp[:,:2] = np.mgrid[0:m_squares,0:n_squares].T.reshape(-1,2)*squareSize#milimetros
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
-images = glob.glob('*.png')
+images = glob.glob('chessboard images\\*.png')
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Find the chess board corners
-    ret, corners = cv.findChessboardCorners(gray, (9,6), None)
+    ret, corners = cv.findChessboardCorners(gray, (m_squares,n_squares), None)
     # If found, add object points, image points (after refining them)
     if ret == True:
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
         imgpoints.append(corners)
         # Draw and display the corners
-        cv.drawChessboardCorners(img, (9,6), corners2, ret)
+        cv.drawChessboardCorners(img, (m_squares,n_squares), corners2, ret)
         cv.imshow('img', img)
-        cv.waitKey(100)
+        cv.waitKey(500)
 
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
@@ -52,13 +55,15 @@ for i in range(len(objpoints)):
     mean_error += error
 print( "total error: {}".format(mean_error/len(objpoints)) )
 
-with open('mtx.npy', 'wb') as f:
+params_folders = "intrinsic parameters\\"
+
+with open(params_folders + 'mtx.npy', 'wb') as f:
     np.save(f, mtx)
-with open('rvecs.npy', 'wb') as f:
+with open(params_folders + 'rvecs.npy', 'wb') as f:
     np.save(f, rvecs)
-with open('tvecs.npy', 'wb') as f:
+with open(params_folders + 'tvecs.npy', 'wb') as f:
     np.save(f, tvecs)
-with open('dist.npy', 'wb') as f:
+with open(params_folders + 'dist.npy', 'wb') as f:
     np.save(f, dist)
     
 cv.destroyAllWindows()

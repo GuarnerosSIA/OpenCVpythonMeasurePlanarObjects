@@ -1,0 +1,1 @@
+Images taken are in this folder
