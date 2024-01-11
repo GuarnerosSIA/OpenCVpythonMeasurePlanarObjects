@@ -29,16 +29,17 @@ for fname in images:
         # Draw and display the corners
         cv.drawChessboardCorners(img, (m_squares,n_squares), corners2, ret)
         cv.imshow('img', img)
-        cv.waitKey(500)
+        cv.waitKey(100)
 
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-img = cv.imread('Calibration0.png')
+img = cv.imread('examples\\test.jpg')
 h,  w = img.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 # undistort
 dst = cv.undistort(img, mtx, dist, None, newcameramtx)
-#cv.imwrite('Z.png', dst)
+cv.imwrite('examples\\undistorted.png', dst)
+cv.imwrite('examples\\distorted.png', img)
 # crop the image
 #x, y, w, h = roi
 #dst = dst[y:y+h, x:x+w]
