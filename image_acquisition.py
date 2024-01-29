@@ -28,7 +28,7 @@ while True:
         print("Calibration Image Adquisition Finished")
         break
     elif k%256 == 32:
-        img_name = "chessboard images\\Calibration{}.png".format(img_calibration)
+        img_name = "chessboard images\\11x8\\Calibration{}.png".format(img_calibration)
         cv2.imwrite(img_name, frame)
         print("{} saved!".format(img_name))
         img_calibration += 1

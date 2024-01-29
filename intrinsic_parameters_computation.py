@@ -15,7 +15,7 @@ objp[:,:2] = np.mgrid[0:m_squares,0:n_squares].T.reshape(-1,2)*squareSize#milime
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
-images = glob.glob('chessboard images\\*.png')
+images = glob.glob('chessboard images\\11x8\\*.png')
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
